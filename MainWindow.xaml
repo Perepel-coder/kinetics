@@ -1,0 +1,77 @@
+﻿<Window x:Class="kinetics.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dv ="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:dvc="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" 
+        xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d" Title="Кинетика растворения" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" 
+        Background="#FF383838" FontSize="15" SizeToContent="WidthAndHeight">
+    <StackPanel Orientation="Horizontal" Margin="10">
+        <StackPanel>
+            <Menu FontSize="15" Height="30" Background="#FF383838">
+                <MenuItem Header="Файл" Foreground="LightGray" Template="{DynamicResource RoundedMenu}">
+                    <MenuItem Header="Сохранить входные данные как" Template="{DynamicResource RoundedMenu}" Command="{Binding SaveInput}"/>
+                    <MenuItem Header="Сохранить результат как" Template="{DynamicResource RoundedMenu}" Command="{Binding SaveOutput}"/>
+                </MenuItem>
+            </Menu>
+            <dvc:Chart Name ="myChart" MinWidth="500" MinHeight="515" Title="Зависимость концентрации от времени" 
+                       Foreground="LightGray" Margin="0,0,10,0">
+                <dvc:Chart.LegendStyle>
+                    <Style TargetType="dv:Legend">
+                        <Setter Property="Width" Value="0"/>
+                    </Style>
+                </dvc:Chart.LegendStyle>
+                <dvc:LineSeries 
+                    ItemsSource="{Binding GetKineticsClass.GetPoints, IsAsync=False}"
+                    IndependentValueBinding="{Binding Time_T }"  
+                    DependentValueBinding="{Binding Concentration_C }">
+                </dvc:LineSeries>
+                <dvc:Chart.Axes>
+                    <dvc:LinearAxis Orientation="X" Title="t" ShowGridLines="True"/>
+                    <dvc:LinearAxis Orientation="Y" Title="C" ShowGridLines="True"/>
+                </dvc:Chart.Axes>
+            </dvc:Chart>
+        </StackPanel>
+        <StackPanel Margin="0,30,0,0">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                    <Label Content="Концентрация начального раствора (A):" Foreground="LightGray" Height="40"/>
+                    <Label Content="Концентрация конечного раствора (Акон):" Foreground="LightGray" Height="40"/>
+                    <Label Content="Константа скорости растворения (K):" Foreground="LightGray" Height="40" />
+                    <Label Content="Погрешность определения скорости % (K1):" Foreground="LightGray" Height="40" />
+                    <Label Content="Погрешность значения концентрации (Акон) % :" Foreground="LightGray" Height="40" />
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <wpfx:DoubleUpDown BorderBrush="#FF42EEFF" Background="#FF292929" Foreground="LightGray" Margin="0,5" Height="30" Width="100"
+                     Value="{Binding Path=GetKineticsClass.GetConcentrationA, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0"/>
+                    <wpfx:DoubleUpDown BorderBrush="#FF42EEFF" Background="#FF292929" Foreground="LightGray" Margin="0,5" Height="30"
+                     Value="{Binding Path=GetKineticsClass.GetConcentrationB, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0"/>
+                    <wpfx:DoubleUpDown BorderBrush="#FF42EEFF" Background="#FF292929" Foreground="LightGray" Margin="0,5" Height="30"
+                     Value="{Binding Path=GetKineticsClass.GetK, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0"/>
+                    <wpfx:DoubleUpDown BorderBrush="#FF42EEFF" Background="#FF292929" Foreground="LightGray" Margin="0,5" Height="30" 
+                     Value="{Binding Path=GetKineticsClass.GetErrorRateK, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0"/>
+                    <wpfx:DoubleUpDown BorderBrush="#FF42EEFF" Background="#FF292929" Foreground="LightGray" Height="30" Margin="0,5"
+                     Value="{Binding Path=GetKineticsClass.GetErrorRateB, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0">
+                <Button Content="Старт" Foreground="LightGray" Background="#FF292929" Style="{DynamicResource RoundedButton}" 
+                        Command="{Binding Start}" Margin="0,0,10,0" Width="100" Height="30"/>
+                <Button Content="Сброс" Foreground="LightGray" Background="#FF292929" Style="{DynamicResource RoundedButton}" 
+                        Command="{Binding Clear}" Width="100" Height="30"/>
+            </StackPanel>
+            <DataGrid Background="LightGray" CanUserSortColumns="False" AutoGenerateColumns="True" Height="186"
+                      ItemsSource = "{Binding GetKineticsClass.GetPoints}" IsReadOnly="True" Margin="0,10,0,0">
+            </DataGrid>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Content="Количествово измерений :" Foreground="LightGray" Height="40" />
+                <TextBox BorderBrush="#FF42EEFF" Background="#FF292929" Foreground="LightGray" Height="30" Margin="0,5"
+                     Text="{Binding Path=GetKineticsClass.GetNumberOfExperiments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
+            </StackPanel>
+            <Button Content="График зависимости концентрации от скорости реакции" Foreground="LightGray" Background="#FF292929" Style="{DynamicResource RoundedButton}" 
+                        Command="{Binding Chart}" Margin="0,0,10,0" Height="30"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
