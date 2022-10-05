@@ -81,7 +81,9 @@ namespace kinetics.ViewModel
                 return chart ??
                   (chart = new RelayCommand(obj =>
                   {
-                      var Chart = container.Resolve<Chart>(new NamedParameter("p1", container.Resolve<ChartViewModel>(new NamedParameter("p1", GetKineticsClass))));
+                      var Chart = container.Resolve<Chart>(
+                          new NamedParameter("p1", container.Resolve<ChartViewModel>(new NamedParameter("p1", GetKineticsClass)))
+                          );
                       Chart.ShowDialog();
                   }));
             }
