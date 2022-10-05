@@ -12,8 +12,13 @@ namespace kinetics
     {
         private void _Startup(object sender, StartupEventArgs e)
         {
-            var container = Container.GetBuilder().Build();
-            var view = new MainWindow { DataContext = container.Resolve<MainViewModel>() };
+            var builder = new ContainerBuilder();
+            builder.RegisterModule<ProjectModule>();
+            builder.Register(c => new MainViewModel());
+            var container = builder.Build();
+            ProjectModule.container = container;
+            var model = container.Resolve<MainViewModel>();
+            var view = new MainWindow { DataContext = model };
             view.Show();
         }
     }

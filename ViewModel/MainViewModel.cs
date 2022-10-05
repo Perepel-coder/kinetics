@@ -4,12 +4,13 @@ using kinetics.Servise;
 using ReactiveUI;
 using System.Windows;
 using System.Windows.Input;
+using ServicesMVVM;
 
 namespace kinetics.ViewModel
 {
     public class MainViewModel : ReactiveObject
     {
-        private IContainer container = Container.GetBuilder().Build();
+        private readonly IContainer container;
         private KineticsClass kineticsClass;
         private int step;
         public int GetStep
@@ -26,17 +27,26 @@ namespace kinetics.ViewModel
         public FileService fileService { get; set; }
         public MainViewModel()
         {
+            this.container = ProjectModule.container; 
             GetKineticsClass = container.Resolve<KineticsClass>();
             dialogService = container.Resolve<DialogService>();
             fileService = container.Resolve<FileService>();
         }
-        private Command start;
+
+
+
+        private RelayCommand start;
+        private RelayCommand clear;
+        private RelayCommand chart;
+        private RelayCommand saveInput;
+        private RelayCommand saveOutput;
+
         public ICommand Start
         {
             get
             {
                 return start ??
-                  (start = new Command(obj =>
+                  (start = new RelayCommand(obj =>
                   {
                       Result result = Result.False;
                       GetKineticsClass.GetNumberOfExperiments = 0;
@@ -52,39 +62,37 @@ namespace kinetics.ViewModel
                   }));
             }
         }
-        private Command clear;
         public ICommand Clear
         {
             get
             {
                 return clear ??
-                  (clear = new Command(obj =>
+                  (clear = new RelayCommand(obj =>
                   {
                       GetKineticsClass = container.Resolve<KineticsClass>();
                       GetKineticsClass.GetPoints.Clear();
                   }));
             }
         }
-        private Command chart;
         public ICommand Chart
         {
             get
             {
                 return chart ??
-                  (chart = new Command(obj =>
+                  (chart = new RelayCommand(obj =>
                   {
-                      var Chart = new Chart { DataContext = container.Resolve<ChartViewModel>(new NamedParameter("p1", GetKineticsClass)) };
+                      var Chart = container.Resolve<Chart>(new NamedParameter("p1", container.Resolve<ChartViewModel>(new NamedParameter("p1", GetKineticsClass))));
                       Chart.ShowDialog();
                   }));
             }
         }
-        public Command saveInput;
+
         public ICommand SaveInput
         {
             get
             {
                 return saveInput ??
-                  (saveInput = new Command(obj =>
+                  (saveInput = new RelayCommand(obj =>
                   {
                       var xlApp = new Microsoft.Office.Interop.Excel.Application();
                       try
@@ -107,13 +115,13 @@ namespace kinetics.ViewModel
                   }));
             }
         }
-        public Command saveOutput;
+
         public ICommand SaveOutput
         {
             get
             {
                 return saveOutput ??
-                  (saveOutput = new Command(obj =>
+                  (saveOutput = new RelayCommand(obj =>
                   {
                       var xlApp = new Microsoft.Office.Interop.Excel.Application();
                       try

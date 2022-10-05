@@ -125,12 +125,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Chart.xaml.cs">
+    <Compile Include="View\Chart.xaml.cs">
       <DependentUpon>Chart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\Container.cs" />
+    <Compile Include="Model\ProjectModule.cs" />
     <Compile Include="Model\SaveData.cs" />
-    <Compile Include="Servise\Command.cs" />
     <Compile Include="Servise\DialogService.cs" />
     <Compile Include="Servise\FileService.cs" />
     <Compile Include="Servise\IDialogService.cs" />
@@ -141,11 +140,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Chart.xaml">
+    <Page Include="View\Chart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -153,7 +152,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -189,6 +188,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="ServicesMVVM\ServicesMVVM.csproj">
+      <Project>{99448063-5a4e-4e4c-972c-4e7362ba535a}</Project>
+      <Name>ServicesMVVM</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
